@@ -1,17 +1,17 @@
 ---
-title: "ADR-0010 — AI Gateway Pattern (Provider-Agnostic AI Integration)"
+title: "ADR-0010 — AI Gateway Pattern"
 status: Accepted
 date: 2026-07-01
 deciders: Abdelhak Zitoun
 category: ADR
+note: Amends prompt management strategy to keep prompt templates inside code rather than the database, preventing parser-template version drift.
 references:
   - docs/04-architecture/architecture-principles.md
   - docs/04-architecture/core-platform.md
   - docs/04-architecture/system-architecture.md
-  - docs/03-domain/bounded-contexts.md
 ---
 
-# ADR-0010 — AI Gateway Pattern (Provider-Agnostic AI Integration)
+# ADR-0010 — AI Gateway Pattern
 
 > **Status**: Accepted — 2026-07-01
 
@@ -19,41 +19,39 @@ references:
 
 ## Context
 
-Nudum is AI-native. AI capabilities are required across multiple modules:
+Nudum is an AI-native platform. AI capabilities are used by several business modules (Archivi OCR, Jawdati anomalies, Mahattati maintenance). To protect against LLM provider lock-in and enable compliance with data residency laws (requiring local Ollama/vLLM models for Algerian public utilities), a provider-agnostic abstraction is required. 
 
-- **Archivi**: Semantic document search, OCR post-processing, document summarization.
-- **Jawdati**: Laboratory result anomaly detection, report drafting, parameter recommendations.
-- **Mahattati**: Predictive maintenance recommendations, operational anomaly detection.
-- **Core**: Intelligent notifications, cross-module knowledge retrieval.
+However, LLM prompt engineering is highly coupled to:
+- The specific model being used (e.g., prompt formatting for Claude vs GPT-4).
+- The application code that dynamically formats prompt variables.
+- The response parsers (Zod schemas) that parse the LLM's output.
 
-The AI landscape is evolving rapidly. Provider lock-in (OpenAI, Anthropic, Google, etc.) would require significant refactoring when switching providers. Local LLMs (Ollama, LM Studio, vLLM) are increasingly viable for on-premise deployments with data sovereignty requirements.
+Storing prompt templates in a database separately from the code introduces a high risk of version mismatch, leading to runtime JSON parsing failures.
 
 ---
 
 ## Decision
 
-> **All AI capabilities will be exposed through a centralized AI Gateway service within the Core Platform. Business modules never call LLM providers directly.**
+> **We will utilize a centralized AI Gateway within the Core Platform for model abstraction, request routing, token accounting, and cost auditing. However, prompt templates, context assembly, and response parsing will reside in the application code of the respective business modules.**
 
-The AI Gateway provides:
-
-1. **Provider abstraction**: A unified interface that routes requests to OpenAI, Anthropic, Google Gemini, or local models based on configuration. Changing the provider requires only an environment variable change, not code changes.
-2. **Prompt management**: Versioned prompt templates stored in the database. Prompts are owned by the platform, not embedded in business logic.
-3. **Context assembly**: The Gateway assembles the user's organizational context, relevant domain data, and knowledge base snippets before calling the LLM.
-4. **Token accounting**: All AI usage is tracked per tenant, per model, per feature. Enables billing and rate limiting.
-5. **Rate limiting**: Per-tenant and per-user AI request rate limits.
-6. **Semantic search**: The Gateway manages vector embeddings and similarity search (initially via `pgvector` PostgreSQL extension).
-7. **Response caching**: Identical prompts with identical context return cached responses to reduce cost.
+Responsibilities:
+- **AI Gateway (Core Platform Service)**:
+  - Abstracts LLM endpoints (OpenAI, Anthropic, Google, local Ollama).
+  - Handles API authentication, rate limiting, and response caching.
+  - Logs token usage per tenant for billing and audit reporting.
+- **Business Modules (Mahattati, Jawdati, Archivi)**:
+  - Define prompt templates in code files versioned via Git.
+  - Compile prompt variables and assemble local context.
+  - Define Zod schemas and parse LLM outputs.
 
 ---
 
 ## Rationale
 
-- **Provider independence**: OpenAI, Anthropic, Google, and local models all have different APIs, pricing, capability sets, and data residency policies. A gateway abstracts these differences.
-- **On-premise AI**: Algerian public institutions may require local LLM deployment. The Gateway routes to Ollama or vLLM without any business module changes.
-- **Cost control**: Centralized token accounting prevents runaway AI costs across modules.
-- **Security**: The Gateway enforces that AI only receives data the tenant has authorized it to see. Business modules cannot accidentally send cross-tenant data to an LLM.
-- **Prompt governance**: Prompt templates are versioned and auditable. Changes to AI behavior go through the same documentation-first process as code changes.
-- **Future-proofing**: When a better model becomes available, updating the Gateway config is sufficient. No business module refactoring required.
+- **No Prompt-Parser Drift**: Storing prompts in code alongside their schema parsers ensures they are deployed together. If a prompt's JSON output structure changes, the code parser is updated in the same commit.
+- **Model Independence**: The AI Gateway allows switching the underlying provider (e.g. from OpenAI to local Ollama) by changing a configuration environment variable without modifying the business module.
+- **Data Sovereignty Compliance**: The Gateway can dynamically route calls to local private LLM servers for on-premise government installations.
+- **Auditing and Cost Metrics**: Token accounting is centralized, preventing runaway costs.
 
 ---
 
@@ -61,48 +59,31 @@ The AI Gateway provides:
 
 | Option | Reason Not Chosen |
 |---|---|
-| Each module calls LLM providers directly | Provider lock-in. No centralized cost control. Cross-tenant data leakage risk. No prompt versioning. No caching. |
-| Third-party AI middleware (LangChain, LlamaIndex) | Heavy dependencies, rapidly evolving APIs, insufficient control over prompt management and security boundaries. Can be used internally by the Gateway, not as the external boundary. |
-| No AI initially | Contradicts the AI-native platform vision. The Gateway architecture must be established before any module implements AI features. |
+| Prompts stored in DB | Rejected due to synchronization risks. Database updates to prompts could silently break code parsers, causing runtime exceptions. |
+| Direct module calls to LLM | Rejected due to provider lock-in, duplicate configuration, and lack of centralized token/cost auditing. |
 
 ---
 
 ## Consequences
 
 ### Positive
-- Zero business module changes when switching AI providers.
-- Centralized security, auditing, and cost visibility.
-- On-premise AI deployment possible without code changes.
-- Consistent AI behavior across all modules.
-- Prompt changes are governed and versioned.
+- Type-safe, version-controlled prompt templates.
+- Centralized security, rate-limiting, and cost control at the Gateway.
+- Graceful degradation fallback routines are easy to implement in code.
 
 ### Negative / Trade-offs
-- The Gateway is a Core Platform component that must be designed before modules can use AI.
-- An additional latency hop (Gateway → Provider) compared to direct API calls. Acceptable given the benefits.
-- The Gateway becomes a single point of failure for AI features. Implement circuit breakers and graceful degradation.
-
----
-
-## Supported Providers (Initial)
-
-| Provider | Model(s) | Use Case |
-|---|---|---|
-| OpenAI | GPT-4o, GPT-4o-mini | Cloud SaaS deployments |
-| Anthropic | Claude Sonnet, Claude Haiku | Cloud SaaS deployments |
-| Google | Gemini 1.5 Pro, Gemini Flash | Cloud SaaS deployments |
-| Ollama (local) | Llama 3, Mistral, Phi-3 | On-premise deployments |
+- Business modules cannot modify prompts in real-time without a code deployment.
+- The AI Gateway is a runtime dependency for AI features.
 
 ---
 
 ## Compliance
 
 - Architecture Principle 12: *AI as a Platform Service*
-- Architecture Principle 18: *Technology Independence* — AI provider is replaceable.
-- Architecture Principle 13: *Security as Architecture* — tenant-scoped AI access.
-- Core Platform: Business modules consume AI through the Gateway API only.
+- Architecture Principle 18: *Technology Independence*
 
 ---
 
 ## Review Trigger
 
-Reconsider the vector database strategy when semantic search volume exceeds `pgvector` capacity (would introduce a dedicated vector DB such as Qdrant or Weaviate, managed by the Gateway — no business module changes).
+Reconsider if a third-party open-source AI gateway (e.g., LiteLLM, Portkey) satisfies Nudum's security and multi-tenant requirements (which could replace our custom gateway wrapper).

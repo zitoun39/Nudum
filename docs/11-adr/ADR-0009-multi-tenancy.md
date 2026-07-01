@@ -1,17 +1,19 @@
 ---
-title: "ADR-0009 — Row-Level Multi-Tenancy Strategy"
+title: "ADR-0009 — Schema-Per-Tenant Multi-Tenancy Strategy"
 status: Accepted
 date: 2026-07-01
 deciders: Abdelhak Zitoun
 category: ADR
+note: Supersedes the previous Row-Level Multi-Tenancy decision per Principal Architect Review to ensure absolute data isolation and native database-level backups.
 references:
   - docs/04-architecture/architecture-principles.md
   - docs/11-adr/ADR-0001-modular-monolith.md
   - docs/11-adr/ADR-0002-postgresql.md
   - docs/11-adr/ADR-0008-jwt-auth.md
+  - docs/11-adr/ADR-0011-orm-and-migrations.md
 ---
 
-# ADR-0009 — Row-Level Multi-Tenancy Strategy
+# ADR-0009 — Schema-Per-Tenant Multi-Tenancy Strategy
 
 > **Status**: Accepted — 2026-07-01
 
@@ -19,37 +21,33 @@ references:
 
 ## Context
 
-Nudum is a multi-tenant SaaS platform where multiple organizations (tenants) share the same application instance and database. Complete data isolation between tenants is a non-negotiable architectural requirement.
+Nudum is a multi-tenant enterprise platform serving water utilities, public laboratories, and government archiving agencies. Complete data isolation between tenants (organizations) is a critical compliance and security requirement.
 
-Three multi-tenancy strategies exist:
-
-1. **Separate database per tenant** — maximum isolation, maximum operational cost.
-2. **Separate schema per tenant** — good isolation, significant migration complexity.
-3. **Shared database, row-level isolation** — efficient, scalable, isolation enforced by application + optional RLS.
+Three multi-tenancy models exist:
+1. **Database-per-tenant**: Maximum isolation, but high infrastructure cost and high operational complexity.
+2. **Row-level isolation (shared table)**: Cost-efficient, but carries high risk of accidental data leakage if a developer omits a filter. It also makes single-tenant backups, restores, and client-specific schema customizations extremely complex.
+3. **Schema-per-tenant (separate schema in a shared database instance)**: Separate PostgreSQL schemas (e.g., `tenant_ade_alger`, `tenant_ade_oran`) sharing a single database engine. It provides strong logical isolation, supports easy single-tenant backup/restore (`pg_dump -n schema`), and allows client-specific schema extensions where contractually required.
 
 ---
 
 ## Decision
 
-> **We will use a shared database with row-level tenant isolation. Every tenant-scoped entity carries an `organization_id` foreign key. All queries are automatically scoped to the authenticated tenant.**
+> **We will use Schema-Per-Tenant multi-tenancy. Each organization operates in its own isolated PostgreSQL schema within a shared database instance. The application layer routes queries dynamically to the active tenant schema based on the request context.**
 
-Implementation:
-
-- Every tenant-scoped entity has `organization_id UUID NOT NULL` as a non-nullable foreign key to the `organizations` table.
-- A NestJS global interceptor extracts `organizationId` from the JWT (`ADR-0008`) and stores it in a per-request `AsyncLocalStorage` context.
-- All repository methods automatically inject `WHERE organization_id = :tenantId` — this is enforced by a base repository class, not by individual developers remembering to add the clause.
-- PostgreSQL Row-Level Security (RLS) is enabled as a defence-in-depth measure on all tenant-scoped tables.
-- A test suite validates that no query against tenant-scoped entities can succeed without a resolved `organization_id`.
+Implementation details:
+- **Default schemas**: The system maintains a `public` schema for shared platform data (Organizations list, Billing plans, global audit templates) and a template schema (`tenant_template`) for provisioning new tenants.
+- **Tenant routing**: A NestJS middleware extracts the tenant identifier from the validated cookie session/JWT and sets the PostgreSQL connection's search path (`SET search_path TO tenant_x, public`) or dynamically retrieves a connection pool mapped to that schema.
+- **ORM abstraction**: The database connection manager (managed via TypeORM, see ADR-0011) resolves the active connection/schema context dynamically using `AsyncLocalStorage` for the active request.
+- **Single-tenant backups**: Operations teams can back up or restore a single tenant schema without impacting other clients using native `pg_dump -n tenant_x` and `pg_restore` commands.
 
 ---
 
 ## Rationale
 
-- **Operational simplicity**: One database, one schema migration set, one backup strategy. Not managing 100+ database instances.
-- **Cost efficiency**: PostgreSQL handles thousands of tenants in one instance with proper indexing on `organization_id`.
-- **Performance**: Composite indexes `(organization_id, entity_id)` and `(organization_id, created_at)` ensure queries remain fast per tenant.
-- **Scalability**: Can migrate to schema-per-tenant or database-per-tenant for specific high-value enterprise customers without rewriting business logic.
-- **Defence in depth**: PostgreSQL RLS acts as a second enforcement layer even if application code has a bug.
+- **High Isolation & Compliance**: Essential for municipal utility and laboratory data under national regulations (Algeria/Middle East).
+- **Simplified Operations**: Restoring a single corrupted tenant to a previous state is a native DB backup restore operation, rather than an application-level script filtering row-by-row.
+- **Client Customizations**: Large municipal customers (such as ADE) can have specific custom fields or custom DB tables added to their isolated schema without altering the shared schema of other SaaS clients.
+- **Developer Safety**: Eliminates the risk of developers writing queries that accidentally leak another organization's data since the connection's `search_path` physically hides other tenant data.
 
 ---
 
@@ -57,45 +55,42 @@ Implementation:
 
 | Option | Reason Not Chosen |
 |---|---|
-| Database per tenant | 100 tenants = 100 databases. Migration management, backup, and monitoring complexity is prohibitive at this stage. |
-| Schema per tenant | PostgreSQL search_path management is error-prone. Migration tools (TypeORM, Prisma) have poor schema-per-tenant support. |
-| No isolation (shared data) | Completely unacceptable. A data breach between tenants would be catastrophic. |
+| Row-level isolation | Rejected due to high data leak risk, complex single-tenant backup/restore, and inability to support custom tenant-specific fields or database views without complicating the global schema. |
+| Database-per-tenant | Rejected for initial phase due to high operational cost (managing 100+ database instances and memory footprints on modest on-premise hardware). |
 
 ---
 
 ## Consequences
 
 ### Positive
-- All tenants share infrastructure cost.
-- One migration run updates all tenants.
-- Application logic is clean — `organizationId` flows transparently through the request context.
-- RLS provides a database-level safety net.
+- Strict security isolation between tenants.
+- Native PostgreSQL schema backups and restores per tenant.
+- Support for client-specific database customization.
+- Immune to application-level query bugs leaking cross-tenant data.
 
 ### Negative / Trade-offs
-- A developer bug that omits `organization_id` filtering could expose cross-tenant data. Mitigated by: base repository enforcement, RLS, and automated tests.
-- Very large tenants cannot be moved to a dedicated database without a migration strategy.
-- Backup and restore for a single tenant requires filtering — not a simple database restore.
+- Connection pool sizing must be monitored closely since schema switching requires active connection management.
+- Running schema migrations requires iterating over all tenant schemas sequentially, increasing deployment time.
+- Cross-tenant global queries (e.g., system-wide metrics) require union queries or a dedicated global reporting schema.
 
 ---
 
-## Tenant Isolation Rules (Mandatory)
+## Tenant Isolation Rules
 
-1. Every entity table that belongs to a tenant **must** have `organization_id UUID NOT NULL`.
-2. No repository method may query a tenant-scoped table without `organizationId` in the WHERE clause.
-3. The `organizationId` always comes from the JWT — never from user-supplied request parameters.
-4. Cross-tenant reads are only permitted for explicitly shared data (e.g., reference tables like `water_quality_standards`).
-5. Any deviation from these rules requires a documented ADR or security exception.
+1. No business module may create a table inside the `public` schema; all business tables belong to tenant schemas.
+2. Tenant schema connection routing must be resolved at the database adapter level, transparently to the business logic code.
+3. Every dynamic tenant connection must be validated against the caller's JWT organization context before execution.
 
 ---
 
 ## Compliance
 
 - Architecture Principle 9: *Multi-Tenant by Design*
-- Engineering Principle 13: *Multi-Tenant Safety*
 - Product Principle 7: *Multi-Tenant by Default*
+- Engineering Principle 13: *Multi-Tenant Safety*
 
 ---
 
 ## Review Trigger
 
-Reconsider for individual enterprise customers who contractually require dedicated infrastructure. A database-per-tenant migration path for premium tiers should be designed at that point.
+Reconsider if a tenant's size or specific security contracts require a dedicated database server (the database adapter can route their requests to an external database instance using the same schema structure).

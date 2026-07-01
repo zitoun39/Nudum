@@ -1,4 +1,4 @@
-﻿---
+---
 title: Nudum Bounded Contexts
 status: Active
 owner: Abdelhak Zitoun
@@ -16,363 +16,72 @@ references:
 
 This document defines the bounded contexts of the Nudum platform.
 
-Each bounded context represents an independent business domain with its own language, business rules, data ownership, and lifecycle.
-
-A bounded context is the highest level of functional isolation within the platform.
-
-Modules may collaborate, but they must not violate the boundaries defined in this document.
+Each bounded context represents an independent business domain with its own language, business rules, data ownership, and lifecycle. Bounded contexts enforce domain isolation, preventing technical coupling and duplicate responsibilities.
 
 ---
 
-# Architectural Philosophy
-
-Nudum follows a Domain-Driven Design (DDD) approach.
-
-The platform is divided into business domains rather than technical layers.
-
-Each bounded context:
-
-* Owns its business rules.
-* Owns its data.
-* Owns its APIs.
-* Owns its workflows.
-* Owns its domain events.
-
-No bounded context should directly manipulate another context's internal data.
-
-Communication occurs through APIs, domain events, or shared platform services.
-
----
-
-# Platform Structure
+## Bounded Context Boundaries
 
 ```text
-                           Nudum Platform
+                           Nudum Monolith
                                  │
- ┌───────────────────────────────────────────────────────────────┐
- │                       Core Platform                           │
- └───────────────────────────────────────────────────────────────┘
-      │            │             │              │
-      ▼            ▼             ▼              ▼
- Mahattati      Jawdati      Archivi      Future Modules
+  ┌──────────────────────────────┼──────────────────────────────┐
+  ▼                              ▼                              ▼
+Core Platform Business     Core Platform Infra         Business Contexts
+(Identity, Orgs, Users)    (File storage, event bus)   (Mahattati, Jawdati, Archivi)
+                                                                │
+                                                                ▼
+                                                       Sibling Extensions
+                                                       (AI Gateway, Billing)
 ```
 
-The Core Platform provides common services.
+---
 
-Business logic belongs to the business contexts.
+## Core Platform Context
+
+Provides shared infrastructural and identity capabilities.
+* **Owns**: Organizations, Users, Authentication, Roles, Permissions, Global Audit Logs, Notification Dispatcher, Workflow State routing, File Client wrapper.
 
 ---
 
-# Core Platform Context
+## Mahattati Context (Operations)
 
-## Responsibility
-
-The Core Platform contains shared capabilities used by every module.
-
-### Owns
-
-* Organizations
-* Users
-* Authentication
-* Authorization
-* Roles
-* Permissions
-* Settings
-* Localization
-* Billing
-* Notifications
-* Audit Logs
-* Workflow Engine
-* Search
-* File Storage
-* AI Gateway
-
-### Does NOT Own
-
-* Laboratory analyses
-* Stations
-* Documents
-* Equipment
-* Samples
-
-Those belong to their respective business contexts.
+Manages operational water facility sites, equipment assets, and sensor telemetry.
+* **Owns**: Sites, Stations, Equipment, Telemetry Sensors, Measurements, Maintenance logs.
+* **Key Boundary**: Does not own Laboratory data, results, or document files.
 
 ---
 
-# Mahattati Context
+## Jawdati Context (Quality Assurance)
 
-## Responsibility
-
-Manage operational facilities and production activities.
-
-### Owns
-
-* Sites
-* Stations
-* Production Units
-* Equipment
-* Sensors
-* Measurements
-* Operational Logs
-* Maintenance Records
-* Production Indicators
-
-### Consumes
-
-* Users
-* Notifications
-* Workflows
-* Documents
-
-### Publishes Events
-
-* StationCreated
-* EquipmentInstalled
-* ProductionRecorded
-* MaintenanceScheduled
-* MaintenanceCompleted
+Manages physicochemical and microbiological water testing and quality compliance.
+* **Owns**: Laboratories, Instruments, Samples, Analyses, Results, Test Methods.
+* **Key Boundary**: `Laboratory` is a root-level aggregate. It does not belong to or inherit from a Mahattati `Site`. It references operational Sites only by external ID lookup.
 
 ---
 
-# Jawdati Context
+## Archivi Context (Information Governance)
 
-## Responsibility
-
-Manage laboratory operations and quality assurance.
-
-### Owns
-
-* Laboratories
-* Samples
-* Analyses
-* Test Methods
-* Laboratory Results
-* Quality Indicators
-* Chemical Calculations
-* Validation Rules
-
-### Consumes
-
-* Users
-* Documents
-* Workflows
-* Notifications
-
-### Publishes Events
-
-* SampleCollected
-* AnalysisStarted
-* AnalysisCompleted
-* ResultValidated
-* LaboratoryReportIssued
+Manages secure digital records and formal correspondence.
+* **Owns**: Documents, Folders, Version records, Retention policies, Correspondence logs.
+* **Key Boundary**: Business modules attach files using a core-level storage client; they do not write to Archivi's internal database directly.
 
 ---
 
-# Archivi Context
+## Sibling Context Extensions
 
-## Responsibility
+### AI Gateway
+- Centralized technical gateway for model routing, token auditing, and request caching.
+- **Boundary**: Does not own prompts, context assembly, or parsers; those live in business modules.
 
-Manage institutional documents and digital records.
-
-### Owns
-
-* Documents
-* Correspondence
-* Digital Archive
-* Folders
-* Tags
-* Metadata
-* Document Versions
-* Retention Policies
-
-### Consumes
-
-* Users
-* Organizations
-* Workflow Engine
-
-### Publishes Events
-
-* DocumentUploaded
-* DocumentApproved
-* DocumentArchived
-* DocumentExpired
+### Billing Context
+- Manages SaaS subscriptions, commercial tiers, and invoices.
+- **Boundary**: Completely isolated from business module features.
 
 ---
 
-# Reporting Context
-
-## Responsibility
-
-Generate operational insights.
-
-### Owns
-
-* Dashboards
-* Reports
-* KPIs
-* Analytics
-* Data Aggregations
-
-This context consumes data from other contexts without owning their business entities.
-
----
-
-# AI Context
-
-## Responsibility
-
-Provide intelligent platform services.
-
-### Owns
-
-* AI Sessions
-* Prompt Templates
-* AI Models Configuration
-* Semantic Indexes
-* Knowledge Retrieval
-
-AI never owns operational business entities.
-
-It consumes authorized data only.
-
----
-
-# Integration Context
-
-## Responsibility
-
-Manage communication with external systems.
-
-Examples include:
-
-* SCADA
-* ERP
-* GIS
-* Payment Providers
-* WhatsApp
-* Telegram
-* Email
-* SMS
-
-This context translates external protocols into internal business events.
-
----
-
-# Billing Context
-
-## Responsibility
-
-Manage subscriptions and commercial operations.
-
-### Owns
-
-* Plans
-* Subscriptions
-* Licenses
-* Invoices
-* Usage Metrics
-* Payments
-
-Billing remains completely independent of business modules.
-
----
-
-# Shared Language
-
-Each bounded context defines its own terminology.
-
-Example:
-
-Within Jawdati:
-
-"Sample" has a precise laboratory meaning.
-
-Within Archivi:
-
-"Document" has a precise archival meaning.
-
-Contexts must not redefine each other's concepts.
-
----
-
-# Context Relationships
-
-```text
-                      Core Platform
-                            │
-      ┌──────────────┬──────────────┬──────────────┐
-      ▼              ▼              ▼              ▼
- Mahattati      Jawdati       Archivi      Billing
-      │              │              │
-      └──────┬───────┴───────┬──────┘
-             ▼               ▼
-         Reporting       AI Services
-             │
-             ▼
-        Integrations
-```
-
-Dependencies always point toward the Core Platform.
-
-Business contexts communicate through contracts—not direct database access.
-
----
-
-# Data Ownership Rules
-
-Each business entity has one authoritative owner.
-
-Examples:
-
-* Sample → Jawdati
-* Equipment → Mahattati
-* Document → Archivi
-* User → Core Platform
-* Subscription → Billing
-
-No duplicate ownership is permitted.
-
----
-
-# Communication Rules
-
-Contexts communicate using:
-
-* REST APIs
-* Domain Events
-* Shared Core Services
-
-Direct database access across contexts is prohibited.
-
----
-
-# Evolution Strategy
-
-Future modules should be introduced as new bounded contexts rather than expanding existing ones.
-
-Examples:
-
-* Asset Management
-* Procurement
-* Fleet Management
-* GIS
-* Compliance
-* Risk Management
-* Incident Management
-
-The architecture must scale through new contexts without modifying existing boundaries.
-
----
-
-# Boundary Integrity
-
-A bounded context may evolve internally without affecting other contexts, provided its public contracts remain stable.
-
-Stable boundaries are more valuable than shared implementations.
-
----
-
-# Bounded Context Statement
-
-> **A bounded context is the highest level of business ownership within Nudum. Clear boundaries preserve modularity, protect business integrity, and enable the platform to evolve without unnecessary coupling.**
+## Context Integration Rules
+
+1. **No Shared Database schemas**: Modules never join tables across contexts.
+2. **References via ID**: When a context references an entity owned by another context, it stores only the ID (e.g. Jawdati `Sample` references Mahattati `Station` via `station_id`).
+3. **Communication Contracts**: Inter-context communication uses public HTTP/REST endpoints or asynchronous domain events.
