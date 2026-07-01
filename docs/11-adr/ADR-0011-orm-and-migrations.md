@@ -8,6 +8,7 @@ references:
   - docs/04-architecture/system-architecture.md
   - docs/11-adr/ADR-0002-postgresql.md
   - docs/11-adr/ADR-0009-multi-tenancy.md
+  - docs/11-adr/ADR-0014-postgresql-schema-routing.md
 ---
 
 # ADR-0011 — ORM and Database Migrations Strategy
@@ -35,7 +36,7 @@ We require an Object-Relational Mapper (ORM) and schema migration strategy that:
 Implementation:
 - **Entities**: Defined as TypeScript classes with TypeORM decorators. They map to database tables in the active schema.
 - **Dynamic Schema Context**: A NestJS middleware intercepts requests, extracts the validated `organization_id`, and sets the active schema name in `AsyncLocalStorage`.
-- **Dynamic Connection**: A custom NestJS dynamic database module resolves a query runner with the search path set to `SET search_path TO tenant_[orgId], public`.
+- **Dynamic Connection**: A custom NestJS dynamic database module resolves a query runner executing `SET LOCAL search_path TO tenant_[orgId], public` inside transaction boundaries to prevent connection state leaks (see ADR-0014).
 - **Migrations**: Migrations are written as TypeScript classes. When running migrations:
   1. The platform migrations are executed once in the `public` schema.
   2. The tenant-scoped migrations are executed sequentially across all active schemas in the database by setting the target schema context dynamically before running the migration set.

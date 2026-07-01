@@ -13,11 +13,15 @@ During this synchronization pass, the following documentation files were modifie
 - **Modified**:
   - [`D:\Nudum\AGENTS.md`](file:///D:/Nudum/AGENTS.md): Updated authoritative technology stack table and multi-tenancy rules to align with schema-per-tenant isolation.
   - [`D:\Nudum\docs\11-adr\ADR-0002-postgresql.md`](file:///D:/Nudum/docs/11-adr/ADR-0002-postgresql.md): Updated database specifications, removing outdated row-level isolation and RLS concepts.
-  - [`D:\Nudum\docs\04-architecture\technology-decisions.md`](file:///D:/Nudum/docs/04-architecture/technology-decisions.md): Appended the renumbered `ADR-0013` to the canonical technology decisions index.
-  - [`D:\Nudum\FINAL_ARCHITECTURE_STATUS.md`](file:///D:/Nudum/FINAL_ARCHITECTURE_STATUS.md): Updated total ADR count to 13 active records.
+  - [`D:\Nudum\docs\11-adr\ADR-0009-multi-tenancy.md`](file:///D:/Nudum/docs/11-adr/ADR-0009-multi-tenancy.md): Updated tenant routing description to reference dynamic routing and `ADR-0014`.
+  - [`D:\Nudum\docs\11-adr\ADR-0011-orm-and-migrations.md`](file:///D:/Nudum/docs/11-adr/ADR-0011-orm-and-migrations.md): Updated dynamic connection details to point to transaction-scoped `SET LOCAL` strategy in `ADR-0014`.
+  - [`D:\Nudum\docs\04-architecture\technology-decisions.md`](file:///D:/Nudum/docs/04-architecture/technology-decisions.md): Appended the renumbered `ADR-0013` and the new `ADR-0014` to the canonical technology decisions index.
+  - [`D:\Nudum\FINAL_ARCHITECTURE_STATUS.md`](file:///D:/Nudum/FINAL_ARCHITECTURE_STATUS.md): Updated total ADR count to 14 active records.
   - [`D:\Nudum\docs\04-architecture\copilot-architecture.md`](file:///D:/Nudum/docs/04-architecture/copilot-architecture.md): Added reference connection to `ADR-0013`.
   - [`D:\Nudum\docs\10-prd\prd-nudum-copilot.md`](file:///D:/Nudum/docs/10-prd/prd-nudum-copilot.md): Added reference connection to `ADR-0013`.
   - [`D:\Nudum\docs\01-product\nudum-copilot.md`](file:///D:/Nudum/docs/01-product/nudum-copilot.md): Added reference connection to `ADR-0013`.
+- **Created**:
+  - [`D:\Nudum\docs\11-adr\ADR-0014-postgresql-schema-routing.md`](file:///D:/Nudum/docs/11-adr/ADR-0014-postgresql-schema-routing.md): Defined the official PostgreSQL schema routing strategy under PgBouncer transaction pooling.
 - **Renamed (Git Move)**:
   - Renamed `docs/11-adr/ADR-0011-nudum-copilot.md` to [`docs/11-adr/ADR-0013-nudum-copilot.md`](file:///D:/Nudum/docs/11-adr/ADR-0013-nudum-copilot.md) to resolve duplicate ADR numbering and maintain chronological order.
 
@@ -44,6 +48,7 @@ During this synchronization pass, the following documentation files were modifie
 - **[ADR-0011 — ORM and Database Migrations Strategy](../11-adr/ADR-0011-orm-and-migrations.md)**: Resolved duplicate indexing.
 - **[ADR-0012 — Platform Administration and Tenant Bootstrapping](../11-adr/ADR-0012-platform-bootstrap.md)**: Maintained sequence order.
 - **[ADR-0013 — Nudum Copilot Architecture & Security Decisions](../11-adr/ADR-0013-nudum-copilot.md)**: Renumbered and aligned.
+- **[ADR-0014 — PostgreSQL Schema Routing Strategy](../11-adr/ADR-0014-postgresql-schema-routing.md)**: Formally adopted transaction-level `SET LOCAL` routing for PgBouncer compatibility.
 
 ---
 

@@ -11,6 +11,7 @@ references:
   - docs/11-adr/ADR-0002-postgresql.md
   - docs/11-adr/ADR-0008-jwt-auth.md
   - docs/11-adr/ADR-0011-orm-and-migrations.md
+  - docs/11-adr/ADR-0014-postgresql-schema-routing.md
 ---
 
 # ADR-0009 — Schema-Per-Tenant Multi-Tenancy Strategy
@@ -36,7 +37,7 @@ Three multi-tenancy models exist:
 
 Implementation details:
 - **Default schemas**: The system maintains a `public` schema for shared platform data (Organizations list, Billing plans, global audit templates) and a template schema (`tenant_template`) for provisioning new tenants.
-- **Tenant routing**: A NestJS middleware extracts the tenant identifier from the validated cookie session/JWT and sets the PostgreSQL connection's search path (`SET search_path TO tenant_x, public`) or dynamically retrieves a connection pool mapped to that schema.
+- **Tenant routing**: Resolved dynamically at the transaction level using transaction-scoped search path routing (`SET LOCAL search_path`) to ensure compatibility with PgBouncer transaction pooling (see ADR-0014).
 - **ORM abstraction**: The database connection manager (managed via TypeORM, see ADR-0011) resolves the active connection/schema context dynamically using `AsyncLocalStorage` for the active request.
 - **Single-tenant backups**: Operations teams can back up or restore a single tenant schema without impacting other clients using native `pg_dump -n tenant_x` and `pg_restore` commands.
 
