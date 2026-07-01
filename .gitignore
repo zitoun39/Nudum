@@ -91,3 +91,8 @@ desktop.ini
 
 # Changesets temporary files
 .changeset/pre.json
+
+# Storybook
+storybook-static/
+.storybook-custom/
+
