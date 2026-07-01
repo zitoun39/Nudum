@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root,
+  [data-theme="light"] {
+    --background: 210 20% 98%;
+    --foreground: 210 12% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 12% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 12% 10%;
+    --primary: 220 70% 50%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 210 20% 95%;
+    --secondary-foreground: 210 12% 10%;
+    --muted: 210 20% 95%;
+    --muted-foreground: 210 6% 45%;
+    --accent: 220 90% 93%;
+    --accent-foreground: 220 80% 32%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 20% 98%;
+    --success: 142 76% 36%;
+    --success-foreground: 142 70% 97%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 95% 12%;
+    --info: 196 90% 48%;
+    --info-foreground: 196 90% 97%;
+    --border: 210 15% 90%;
+    --input: 210 15% 90%;
+    --ring: 220 70% 50%;
+
+    --radius-lg: 0.5rem;
+    --radius-md: 0.375rem;
+    --radius-sm: 0.25rem;
+    --radius-xs: 0.125rem;
+
+    --font-sans: "Inter", "system-ui", sans-serif;
+    --font-mono: "monospace";
+    --font-arabic: "Outfit", "Noto Sans Arabic", sans-serif;
+  }
+
+  [data-theme="dark"],
+  .dark {
+    --background: 210 12% 10%;
+    --foreground: 210 20% 98%;
+    --card: 210 10% 15%;
+    --card-foreground: 210 20% 98%;
+    --popover: 210 10% 15%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 220 75% 62%;
+    --primary-foreground: 210 15% 5%;
+    --secondary: 210 8% 25%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 210 8% 25%;
+    --muted-foreground: 210 8% 60%;
+    --accent: 220 85% 22%;
+    --accent-foreground: 220 95% 97%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 20% 98%;
+    --success: 142 76% 36%;
+    --success-foreground: 142 70% 97%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 95% 12%;
+    --info: 196 90% 48%;
+    --info-foreground: 196 90% 97%;
+    --border: 210 8% 25%;
+    --input: 210 8% 25%;
+    --ring: 220 75% 62%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
+  :lang(ar) {
+    @apply font-arabic;
+  }
+}
