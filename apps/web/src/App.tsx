@@ -1,4 +1,3 @@
-import React from "react";
 import { UI_LIBRARY_VERSION } from "@nudum/ui";
 
 function App() {

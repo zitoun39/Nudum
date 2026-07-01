@@ -6,7 +6,7 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint \"src/**/*.ts\" --no-error-on-unmatched-pattern"
   },
   "dependencies": {
     "react": "^18.2.0",

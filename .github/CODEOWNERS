@@ -1,0 +1,10 @@
+# Global Code Owners for Nudum Repository
+
+# Every change requires review from the lead maintainer
+*       @zitoun39
+
+# Specific modules
+/docs/                      @zitoun39
+/apps/api/                  @zitoun39
+/apps/web/                  @zitoun39
+/packages/ui/               @zitoun39
