@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: ankane/pgvector:15
+    container_name: nudum-postgres
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER:-nudum_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-nudum_secure_pass_2026}
+      POSTGRES_DB: ${DB_NAME:-nudum_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nudum-network
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    container_name: nudum-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - nudum-network
+    restart: always
+
+  minio:
+    image: minio/minio:RELEASE.2023-11-20T22-40-07Z
+    container_name: nudum-minio
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio_admin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio_secure_pass_2026}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - nudum-network
+    restart: always
+
+networks:
+  nudum-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local

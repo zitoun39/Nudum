@@ -1,0 +1,8 @@
+node_modules/
+dist/
+build/
+coverage/
+.turbo/
+apps/web/dist/
+apps/api/dist/
+packages/ui/dist/
