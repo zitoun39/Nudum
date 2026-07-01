@@ -14,7 +14,7 @@ Following a series of comprehensive design reviews, the Nudum repository has bee
 
 ## 2. Repository Health Score: 9.5 / 10
 
-* **Completeness**: 95% (All major domain models, bounded contexts, and 12 ADRs are fully established).
+* **Completeness**: 95% (All major domain models, bounded contexts, and 13 ADRs are fully established).
 * **Decoupling**: 95% (Module boundaries are strictly defined, anti-corruption layers are specified, and compile-time context coupling has been eliminated).
 * **Security & Compliance**: 100% (Strict PostgreSQL schema isolation and HttpOnly cookie-based JWT revocation are enforced by architectural design).
 
@@ -43,7 +43,7 @@ Following a series of comprehensive design reviews, the Nudum repository has bee
 * **03-domain** (DDD contexts, boundaries, language, registry): **Complete**
 * **04-architecture & 05-development**: **Complete**
 * **07-api & 08-database**: **Scaffolded** (Ready for REST and schema endpoints)
-* **11-adr** (Architecture Decision Records): **Complete** (12 active ADRs)
+* **11-adr** (Architecture Decision Records): **Complete** (13 active ADRs)
 
 ---
 

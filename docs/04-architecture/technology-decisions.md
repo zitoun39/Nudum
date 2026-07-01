@@ -33,6 +33,7 @@ Strategic decisions are formal and tracked individually as **Architectural Decis
 | [ADR-0010](../11-adr/ADR-0010-ai-gateway.md) | AI Gateway Pattern | Accepted | 2026-07-01 |
 | [ADR-0011](../11-adr/ADR-0011-orm-and-migrations.md) | ORM and Database Migrations Strategy | Accepted | 2026-07-01 |
 | [ADR-0012](../11-adr/ADR-0012-platform-bootstrap.md) | Platform Administration and Tenant Bootstrapping Strategy | Accepted | 2026-07-01 |
+| [ADR-0013](../11-adr/ADR-0013-nudum-copilot.md) | Nudum Copilot Architecture & Security Decisions | Accepted | 2026-07-01 |
 
 ---
 

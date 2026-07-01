@@ -7,6 +7,7 @@ category: Product
 references:
   - docs/01-product/nudum-copilot.md
   - docs/04-architecture/copilot-architecture.md
+  - docs/11-adr/ADR-0013-nudum-copilot.md
 ---
 
 # PRD — Nudum Copilot MVP

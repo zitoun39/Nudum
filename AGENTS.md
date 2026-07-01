@@ -74,7 +74,7 @@ Before writing any code, read these documents in order:
 | Object Storage | MinIO (S3-compatible) | ADR-0007 |
 | Authentication | JWT + Refresh Tokens | ADR-0008 |
 | Application Architecture | Modular Monolith (first) | ADR-0001 |
-| Multi-tenancy | Row-level tenant isolation | ADR-0009 |
+| Multi-tenancy | Schema-per-tenant isolation | ADR-0009 |
 | AI Integration | AI Gateway (provider-agnostic) | ADR-0010 |
 
 > ⚠️ **Important**: The frontend is **React + Vite**, not Next.js. `system-architecture.md` previously contained an error that has been corrected. Always follow `technology-decisions.md` for the authoritative stack.
@@ -105,9 +105,9 @@ Before writing any code, read these documents in order:
 - All of these belong exclusively to the Core Platform.
 
 ### Multi-Tenancy
-- Every query, service, and storage operation **must** include tenant isolation.
-- `organization_id` / `tenant_id` must be present on all tenant-scoped entities.
-- No implementation may bypass tenant boundaries.
+- Every query, service, and storage operation **must** enforce tenant schema isolation.
+- Tenant schemas are isolated (`tenant_[org_id]`), and database connection routing must target the active tenant schema.
+- No implementation may bypass tenant schema boundaries.
 
 ### Security
 - Every endpoint requires: Authentication · Authorization · Validation · Audit Logging.

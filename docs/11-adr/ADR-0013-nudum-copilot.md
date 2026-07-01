@@ -1,5 +1,5 @@
 ---
-title: "ADR-0011 — Nudum Copilot Architecture & Security Decisions"
+title: "ADR-0013 — Nudum Copilot Architecture & Security Decisions"
 status: Accepted
 date: 2026-07-01
 deciders: Abdelhak Zitoun
@@ -11,7 +11,7 @@ references:
   - docs/11-adr/ADR-0010-ai-gateway.md
 ---
 
-# ADR-0011 — Nudum Copilot Architecture & Security Decisions
+# ADR-0013 — Nudum Copilot Architecture & Security Decisions
 
 > **Status**: Accepted — 2026-07-01
 

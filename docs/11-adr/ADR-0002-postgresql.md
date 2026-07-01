@@ -24,7 +24,7 @@ The database must:
 
 - Guarantee ACID compliance for all transactional business operations.
 - Support complex relational queries across entities (samples → analyses → results).
-- Handle multi-tenant row-level isolation efficiently.
+- Handle multi-tenant schema-level isolation efficiently.
 - Support full-text search as an initial search strategy (before dedicated search engines).
 - Run on-premise on customer infrastructure.
 - Be available as a managed cloud service.
@@ -35,7 +35,7 @@ The database must:
 
 > **We will use PostgreSQL as the sole primary relational database for all Nudum business data.**
 
-All bounded contexts (Core, Mahattati, Jawdati, Archivi) will store their data in PostgreSQL. Multi-tenancy is implemented at the row level using an `organization_id` foreign key on every tenant-scoped entity.
+All bounded contexts (Core, Mahattati, Jawdati, Archivi) will store their data in PostgreSQL. Multi-tenancy is implemented at the schema level (separate schema per organization) sharing a single database instance (see ADR-0009).
 
 ---
 
@@ -44,7 +44,7 @@ All bounded contexts (Core, Mahattati, Jawdati, Archivi) will store their data i
 - **ACID compliance**: Laboratory results, regulatory measurements, and document approvals require strict transactional integrity.
 - **JSON support**: `jsonb` columns allow flexible metadata storage without sacrificing relational integrity.
 - **Advanced indexing**: GIN indexes for full-text search, partial indexes for tenant-scoped queries, composite indexes for analytical queries.
-- **Row-level security (RLS)**: PostgreSQL's native RLS can enforce tenant isolation at the database level as a defence-in-depth measure.
+- **Schema-level Isolation**: Restricts database search path per connection dynamically, ensuring logical data isolation at the database level.
 - **Strong ecosystem**: TypeORM, Prisma, Drizzle, and MikroORM all support PostgreSQL with mature TypeScript clients.
 - **On-premise deployable**: Runs on any Linux server, Docker container, or managed service (AWS RDS, Azure Database, Supabase, Neon).
 - **Longevity**: PostgreSQL has a 30+ year track record of reliability and backward compatibility.
@@ -66,7 +66,7 @@ All bounded contexts (Core, Mahattati, Jawdati, Archivi) will store their data i
 
 ### Positive
 - Full relational integrity across all business entities.
-- Native multi-tenant isolation with `organization_id` and optional RLS.
+- Native multi-tenant isolation via dynamic schema switching.
 - Full-text search available immediately via `tsvector` / `tsquery`.
 - JSON flexibility for extensible metadata without schema changes.
 
@@ -75,15 +75,15 @@ All bounded contexts (Core, Mahattati, Jawdati, Archivi) will store their data i
 - Time-series data (sensor measurements) may eventually benefit from TimescaleDB extension or a dedicated TSDB.
 
 ### Neutral
-- ORM selection (TypeORM vs Prisma vs MikroORM) is a separate decision not governed by this ADR.
-- Search will migrate to Meilisearch or OpenSearch when PostgreSQL FTS is no longer sufficient (a separate ADR will govern that transition).
+- ORM selection (TypeORM vs Prisma vs MikroORM) is a separate decision governed by ADR-0011.
+- Search will migrate to Meilisearch or OpenSearch when PostgreSQL FTS is no longer sufficient.
 
 ---
 
 ## Compliance
 
 - Architecture Principle 9: *Multi-Tenant by Design*
-- Architecture Principle 13: *Security as Architecture* (RLS as defence-in-depth)
+- Architecture Principle 13: *Security as Architecture*
 - Engineering Principle 11: *Database Is Not Business Logic*
 
 ---

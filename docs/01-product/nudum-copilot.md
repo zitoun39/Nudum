@@ -8,6 +8,7 @@ references:
   - docs/01-product/product-principles.md
   - docs/01-product/product-strategy.md
   - docs/02-business/business-model.md
+  - docs/11-adr/ADR-0013-nudum-copilot.md
 ---
 
 # Nudum Copilot Product Strategy

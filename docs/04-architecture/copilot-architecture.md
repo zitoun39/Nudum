@@ -7,8 +7,9 @@ category: Architecture
 references:
   - docs/04-architecture/system-architecture.md
   - docs/04-architecture/core-platform.md
-  - docs/11-adr/ADR-0010-ai-gateway.md
   - docs/11-adr/ADR-0009-multi-tenancy.md
+  - docs/11-adr/ADR-0010-ai-gateway.md
+  - docs/11-adr/ADR-0013-nudum-copilot.md
 ---
 
 # Nudum Copilot Architecture
