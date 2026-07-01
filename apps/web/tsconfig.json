@@ -4,6 +4,7 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "jsx": "react-jsx",
+    "composite": true,
     "lib": ["es2022", "dom", "dom.iterable"]
   },
   "include": ["src/**/*"]

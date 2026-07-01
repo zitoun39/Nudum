@@ -8,8 +8,10 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",
+    "verify": "pnpm run lint && pnpm run build && pnpm run test",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\""
   },
+  "packageManager": "pnpm@11.9.0",
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"

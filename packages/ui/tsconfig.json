@@ -5,6 +5,7 @@
     "rootDir": "./src",
     "jsx": "react-jsx",
     "declaration": true,
+    "composite": true,
     "lib": ["es2022", "dom", "dom.iterable"],
     "module": "ESNext",
     "moduleResolution": "node"
