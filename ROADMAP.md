@@ -8,12 +8,12 @@ This document serves as the **Single Source of Truth** for the implementation st
 
 | Layer / Dimension                 | Completion % | Weighted Impact | Status                      |
 | :-------------------------------- | :----------: | :-------------: | :-------------------------- |
-| **Entire Platform (Global)**      |  **67.5%**   |      100%       | ◐ In Progress               |
+| **Entire Platform (Global)**      |  **70.0%**   |      100%       | ◐ In Progress               |
 | **Documentation**                 |  **95.0%**   |       15%       | ☑ Completed / Near Complete |
 | **Design System (`packages/ui`)** |  **100.0%**  |       15%       | ☑ Completed                 |
 | **Infrastructure & Core API**     |  **100.0%**  |       25%       | ☑ Completed                 |
 | **Testing & CI/CD**               |  **35.0%**   |       15%       | ◐ In Progress               |
-| **Business Modules**              |  **20.0%**   |       30%       | ◐ In Progress               |
+| **Business Modules**              |  **25.0%**   |       30%       | ◐ In Progress               |
 
 ---
 
@@ -54,7 +54,7 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Objective**: Implement business logic layers for **Archivi** (Enterprise Document Management), **Mahattati** (Water treatment plant operations), and **Jawdati** (Lab specimen management).
 - **Dependencies**: Milestone 3
 - **Estimated Complexity**: High
-- **Completion %**: 60%
+- **Completion %**: 80%
 - **Blocking Issues**: None
 - **Priority**: High
 - **Status**: ◐ In Progress
@@ -225,6 +225,35 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Description**: Implement DocumentsController exposing REST endpoints for uploading versions, creating document containers, and fetching presigned download URLs. Register endpoints in ArchiviModule.
 - **Module**: Archivi
 - **Files involved**: `apps/api/src/modules/archivi/documents.controller.ts`, `apps/api/src/modules/archivi/archivi.module.ts`
+- **Risk level**: Medium
+- **Estimated effort**: 2 hours
+- **Progress %**: 100%
+- **Notes**: Completed.
+
+### Component: Business Module - Archivi Correspondence Logs
+
+- **ID**: `ARC-007`
+- **Description**: Implement CreateCorrespondenceDto and UpdateCorrespondenceStatusDto validation models.
+- **Module**: Archivi
+- **Files involved**: `apps/api/src/modules/archivi/dto/correspondences.dto.ts`
+- **Risk level**: Low
+- **Estimated effort**: 1 hour
+- **Progress %**: 100%
+- **Notes**: Completed.
+
+- **ID**: `ARC-008`
+- **Description**: Implement CorrespondencesService managing registration and status workflow state progression.
+- **Module**: Archivi
+- **Files involved**: `apps/api/src/modules/archivi/correspondences.service.ts`
+- **Risk level**: Medium
+- **Estimated effort**: 3 hours
+- **Progress %**: 100%
+- **Notes**: Completed.
+
+- **ID**: `ARC-009`
+- **Description**: Implement CorrespondencesController exposing REST endpoints at /api/correspondences, and register inside ArchiviModule.
+- **Module**: Archivi
+- **Files involved**: `apps/api/src/modules/archivi/correspondences.controller.ts`, `apps/api/src/modules/archivi/archivi.module.ts`
 - **Risk level**: Medium
 - **Estimated effort**: 2 hours
 - **Progress %**: 100%
