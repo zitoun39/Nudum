@@ -8,12 +8,12 @@ This document serves as the **Single Source of Truth** for the implementation st
 
 | Layer / Dimension                 | Completion % | Weighted Impact | Status                      |
 | :-------------------------------- | :----------: | :-------------: | :-------------------------- |
-| **Entire Platform (Global)**      |  **75.0%**   |      100%       | ◐ In Progress               |
-| **Documentation**                 |  **95.0%**   |       15%       | ☑ Completed / Near Complete |
+| **Entire Platform (Global)**      |  **71.0%**   |      100%       | ◐ In Progress               |
+| **Documentation**                 |  **96.0%**   |       15%       | ☑ Completed / Near Complete |
 | **Design System (`packages/ui`)** |  **100.0%**  |       15%       | ☑ Completed                 |
 | **Infrastructure & Core API**     |  **100.0%**  |       25%       | ☑ Completed                 |
 | **Testing & CI/CD**               |  **35.0%**   |       15%       | ◐ In Progress               |
-| **Business Modules**              |  **33.3%**   |       30%       | ◐ In Progress               |
+| **Business Modules**              |  **18.0%**   |       30%       | ◐ In Progress               |
 
 ---
 
@@ -54,10 +54,10 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Objective**: Implement business logic layers for **Archivi** (Enterprise Document Management), **Mahattati** (Water treatment plant operations), and **Jawdati** (Lab specimen management).
 - **Dependencies**: Milestone 3
 - **Estimated Complexity**: High
-- **Completion %**: 100%
+- **Completion %**: 60%
 - **Blocking Issues**: None
 - **Priority**: High
-- **Status**: ☑ Completed
+- **Status**: ◐ In Progress
 
 ---
 
@@ -269,3 +269,14 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Estimated effort**: 2 hours
 - **Progress %**: 100%
 - **Notes**: Completed. All tests pass successfully.
+
+### Component: Business Module - Mahattati Database Setup
+
+- **ID**: `MAH-001`
+- **Description**: Create Site, Station, Equipment, and Measurement TypeORM entity models inside apps/api and register inside dynamic schema migrations.
+- **Module**: Mahattati
+- **Files involved**: `apps/api/src/modules/mahattati/entities/*`, `apps/api/src/database/migrations/tenant/1719921000000-TenantSetup.ts`
+- **Risk level**: Medium
+- **Estimated effort**: 4 hours
+- **Progress %**: 100%
+- **Notes**: Completed. All entities and migration changes pass verification compiler.

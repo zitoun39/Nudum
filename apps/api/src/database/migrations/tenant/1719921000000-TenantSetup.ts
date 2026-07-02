@@ -145,9 +145,76 @@ export class TenantSetup1719921000000 implements MigrationInterface {
         CONSTRAINT FK_correspondences_document FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE SET NULL
       );
     `);
+
+    // 9. Create Mahattati sites table
+    await queryRunner.query(`
+      CREATE TABLE IF NOT EXISTS sites (
+        id uuid NOT NULL DEFAULT gen_random_uuid(),
+        name varchar(150) NOT NULL,
+        location varchar(255),
+        created_at timestamp NOT NULL DEFAULT now(),
+        updated_at timestamp NOT NULL DEFAULT now(),
+        CONSTRAINT PK_sites_id PRIMARY KEY (id)
+      );
+    `);
+
+    // 10. Create Mahattati stations table
+    await queryRunner.query(`
+      CREATE TABLE IF NOT EXISTS stations (
+        id uuid NOT NULL DEFAULT gen_random_uuid(),
+        name varchar(150) NOT NULL,
+        site_id uuid NOT NULL,
+        capacity_m3_day numeric(12,2),
+        status varchar(50) NOT NULL DEFAULT 'active',
+        created_at timestamp NOT NULL DEFAULT now(),
+        updated_at timestamp NOT NULL DEFAULT now(),
+        CONSTRAINT PK_stations_id PRIMARY KEY (id),
+        CONSTRAINT FK_stations_site FOREIGN KEY (site_id) REFERENCES sites(id) ON DELETE CASCADE
+      );
+    `);
+
+    // 11. Create Mahattati equipment table
+    await queryRunner.query(`
+      CREATE TABLE IF NOT EXISTS equipment (
+        id uuid NOT NULL DEFAULT gen_random_uuid(),
+        name varchar(150) NOT NULL,
+        serial_number varchar(100),
+        station_id uuid NOT NULL,
+        type varchar(100) NOT NULL,
+        installed_at date,
+        status varchar(50) NOT NULL DEFAULT 'operational',
+        created_at timestamp NOT NULL DEFAULT now(),
+        updated_at timestamp NOT NULL DEFAULT now(),
+        CONSTRAINT PK_equipment_id PRIMARY KEY (id),
+        CONSTRAINT FK_equipment_station FOREIGN KEY (station_id) REFERENCES stations(id) ON DELETE CASCADE
+      );
+    `);
+
+    // 12. Create Mahattati measurements table
+    await queryRunner.query(`
+      CREATE TABLE IF NOT EXISTS measurements (
+        id uuid NOT NULL DEFAULT gen_random_uuid(),
+        station_id uuid NOT NULL,
+        equipment_id uuid,
+        parameter_name varchar(100) NOT NULL,
+        value numeric(12,4) NOT NULL,
+        unit varchar(20) NOT NULL,
+        logged_by uuid NOT NULL,
+        logged_at timestamp NOT NULL DEFAULT now(),
+        created_at timestamp NOT NULL DEFAULT now(),
+        CONSTRAINT PK_measurements_id PRIMARY KEY (id),
+        CONSTRAINT FK_measurements_station FOREIGN KEY (station_id) REFERENCES stations(id) ON DELETE CASCADE,
+        CONSTRAINT FK_measurements_equipment FOREIGN KEY (equipment_id) REFERENCES equipment(id) ON DELETE SET NULL
+      );
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TABLE IF EXISTS measurements;`);
+    await queryRunner.query(`DROP TABLE IF EXISTS equipment;`);
+    await queryRunner.query(`DROP TABLE IF EXISTS stations;`);
+    await queryRunner.query(`DROP TABLE IF EXISTS sites;`);
+
     await queryRunner.query(`DROP TABLE IF EXISTS correspondences;`);
     await queryRunner.query(`DROP TABLE IF EXISTS document_tags;`);
 
