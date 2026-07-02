@@ -8,12 +8,12 @@ This document serves as the **Single Source of Truth** for the implementation st
 
 | Layer / Dimension                 | Completion % | Weighted Impact | Status                      |
 | :-------------------------------- | :----------: | :-------------: | :-------------------------- |
-| **Entire Platform (Global)**      |  **75.0%**   |      100%       | ◐ In Progress               |
+| **Entire Platform (Global)**      |  **76.0%**   |      100%       | ◐ In Progress               |
 | **Documentation**                 |  **96.0%**   |       15%       | ☑ Completed / Near Complete |
 | **Design System (`packages/ui`)** |  **100.0%**  |       15%       | ☑ Completed                 |
 | **Infrastructure & Core API**     |  **100.0%**  |       25%       | ☑ Completed                 |
 | **Testing & CI/CD**               |  **35.0%**   |       15%       | ◐ In Progress               |
-| **Business Modules**              |  **26.0%**   |       30%       | ◐ In Progress               |
+| **Business Modules**              |  **28.0%**   |       30%       | ◐ In Progress               |
 
 ---
 
@@ -54,7 +54,7 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Objective**: Implement business logic layers for **Archivi** (Enterprise Document Management), **Mahattati** (Water treatment plant operations), and **Jawdati** (Lab specimen management).
 - **Dependencies**: Milestone 3
 - **Estimated Complexity**: High
-- **Completion %**: 92%
+- **Completion %**: 94%
 - **Blocking Issues**: None
 - **Priority**: High
 - **Status**: ◐ In Progress
@@ -324,3 +324,14 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Estimated effort**: 4 hours
 - **Progress %**: 100%
 - **Notes**: Completed. All entities and migration changes pass verification compiler.
+
+### Component: Business Module - Jawdati Core Services
+
+- **ID**: `JAW-002`
+- **Description**: Implement LaboratoriesService and SamplesService managing laboratory asset registries and water specimen collection logs.
+- **Module**: Jawdati
+- **Files involved**: `apps/api/src/modules/jawdati/laboratories.service.ts`, `apps/api/src/modules/jawdati/samples.service.ts`, `apps/api/src/modules/jawdati/dto/*`
+- **Risk level**: Medium
+- **Estimated effort**: 5 hours
+- **Progress %**: 100%
+- **Notes**: Completed. All core services pass validation.
