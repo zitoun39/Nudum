@@ -37,11 +37,5 @@
     "**/*.{json,md,css}": [
       "prettier --write"
     ]
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@nestjs/core",
-      "esbuild"
-    ]
   }
 }
