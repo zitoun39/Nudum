@@ -15,7 +15,10 @@ export class TenantMiddleware implements NestMiddleware {
 
     if (token) {
       try {
-        const payload = this.jwtService.decode(token) as any;
+        const payload = this.jwtService.verify(token, {
+          secret: process.env.JWT_SECRET
+        }) as any;
+
         if (payload) {
           const tenantId = payload.organizationId;
           const isPlatformAdmin = !!payload.isPlatformAdmin;
@@ -28,11 +31,11 @@ export class TenantMiddleware implements NestMiddleware {
           );
         }
       } catch (err) {
-        // Log or suppress token parsing failures
+        return res.status(401).json({ message: "Invalid or expired token" });
       }
     }
 
-    // Fallback: Default to public context if no token or invalid token is supplied
+    // Fallback: Default to public context if no token is supplied
     return this.tenantContextService.run({ schemaName: "public" }, () => next());
   }
 
