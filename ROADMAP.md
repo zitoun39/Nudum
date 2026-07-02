@@ -8,12 +8,12 @@ This document serves as the **Single Source of Truth** for the implementation st
 
 | Layer / Dimension                 | Completion % | Weighted Impact | Status                      |
 | :-------------------------------- | :----------: | :-------------: | :-------------------------- |
-| **Entire Platform (Global)**      |  **63.5%**   |      100%       | ◐ In Progress               |
+| **Entire Platform (Global)**      |  **65.0%**   |      100%       | ◐ In Progress               |
 | **Documentation**                 |  **95.0%**   |       15%       | ☑ Completed / Near Complete |
 | **Design System (`packages/ui`)** |  **100.0%**  |       15%       | ☑ Completed                 |
 | **Infrastructure & Core API**     |  **100.0%**  |       25%       | ☑ Completed                 |
 | **Testing & CI/CD**               |  **35.0%**   |       15%       | ◐ In Progress               |
-| **Business Modules**              |  **10.0%**   |       30%       | ◐ In Progress               |
+| **Business Modules**              |  **15.0%**   |       30%       | ◐ In Progress               |
 
 ---
 
@@ -54,7 +54,7 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Objective**: Implement business logic layers for **Archivi** (Enterprise Document Management), **Mahattati** (Water treatment plant operations), and **Jawdati** (Lab specimen management).
 - **Dependencies**: Milestone 3
 - **Estimated Complexity**: High
-- **Completion %**: 20%
+- **Completion %**: 40%
 - **Blocking Issues**: None
 - **Priority**: High
 - **Status**: ◐ In Progress
@@ -169,3 +169,32 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Estimated effort**: 4 hours
 - **Progress %**: 100%
 - **Notes**: Completed. All entities built with TypeORM decorators and tenant migrations updated.
+
+### Component: Business Module - Archivi Folders & Tags Logic
+
+- **ID**: `ARC-002`
+- **Description**: Implement CreateFolderDto, UpdateFolderDto, and CreateTagDto validation models.
+- **Module**: Archivi
+- **Files involved**: `apps/api/src/modules/archivi/dto/*`
+- **Risk level**: Low
+- **Estimated effort**: 1 hour
+- **Progress %**: 100%
+- **Notes**: Completed.
+
+- **ID**: `ARC-003`
+- **Description**: Implement FoldersService and TagsService containing business logic for directory tree and taxonomy management.
+- **Module**: Archivi
+- **Files involved**: `apps/api/src/modules/archivi/folders.service.ts`, `apps/api/src/modules/archivi/tags.service.ts`
+- **Risk level**: Medium
+- **Estimated effort**: 3 hours
+- **Progress %**: 100%
+- **Notes**: Completed.
+
+- **ID**: `ARC-004`
+- **Description**: Implement FoldersController and TagsController exposing CRUD REST endpoints, and register ArchiviModule in AppModule.
+- **Module**: Archivi
+- **Files involved**: `apps/api/src/modules/archivi/folders.controller.ts`, `apps/api/src/modules/archivi/tags.controller.ts`, `apps/api/src/modules/archivi/archivi.module.ts`, `apps/api/src/app.module.ts`
+- **Risk level**: Medium
+- **Estimated effort**: 2 hours
+- **Progress %**: 100%
+- **Notes**: Completed.
