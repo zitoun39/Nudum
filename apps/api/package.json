@@ -38,6 +38,8 @@
     "@types/cookie-parser": "^1.4.6",
     "@types/bcrypt": "^5.0.2",
     "@types/ioredis": "^4.28.10",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "@nudum/tsconfig": "workspace:*",
     "typescript": "^5.2.2"
   }
