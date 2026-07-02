@@ -1,11 +1,14 @@
-import { Injectable, ConflictException } from "@nestjs/common";
+import { Injectable, ConflictException, Inject } from "@nestjs/common";
 import { TenantConnectionManager } from "../../database/tenant-connection-manager";
 import { Tag } from "./entities/tag.entity";
 import { CreateTagDto } from "./dto/tags.dto";
 
 @Injectable()
 export class TagsService {
-  constructor(private readonly connectionManager: TenantConnectionManager) {}
+  constructor(
+    @Inject(TenantConnectionManager)
+    private readonly connectionManager: TenantConnectionManager
+  ) {}
 
   async create(dto: CreateTagDto): Promise<Tag> {
     return this.connectionManager.runInTransaction(async (manager) => {

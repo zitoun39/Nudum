@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from "@nestjs/common";
+import { Injectable, BadRequestException, NotFoundException, Inject } from "@nestjs/common";
 import { TenantConnectionManager } from "../../database/tenant-connection-manager";
 import { Folder } from "./entities/folder.entity";
 import { CreateFolderDto } from "./dto/folders.dto";
@@ -6,7 +6,10 @@ import { Document } from "./entities/document.entity";
 
 @Injectable()
 export class FoldersService {
-  constructor(private readonly connectionManager: TenantConnectionManager) {}
+  constructor(
+    @Inject(TenantConnectionManager)
+    private readonly connectionManager: TenantConnectionManager
+  ) {}
 
   async create(dto: CreateFolderDto): Promise<Folder> {
     return this.connectionManager.runInTransaction(async (manager) => {

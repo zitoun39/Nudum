@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException, Inject } from "@nestjs/common";
 import { TenantConnectionManager } from "../../database/tenant-connection-manager";
 import { StorageService } from "../storage/storage.service";
 import { Document } from "./entities/document.entity";
@@ -10,6 +10,7 @@ import { CreateDocumentDto } from "./dto/documents.dto";
 @Injectable()
 export class DocumentsService {
   constructor(
+    @Inject(TenantConnectionManager)
     private readonly connectionManager: TenantConnectionManager,
     private readonly storageService: StorageService
   ) {}

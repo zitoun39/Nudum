@@ -2,7 +2,8 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
-  ConflictException
+  ConflictException,
+  Inject
 } from "@nestjs/common";
 import { TenantConnectionManager } from "../../database/tenant-connection-manager";
 import {
@@ -15,7 +16,10 @@ import { CreateCorrespondenceDto } from "./dto/correspondences.dto";
 
 @Injectable()
 export class CorrespondencesService {
-  constructor(private readonly connectionManager: TenantConnectionManager) {}
+  constructor(
+    @Inject(TenantConnectionManager)
+    private readonly connectionManager: TenantConnectionManager
+  ) {}
 
   async create(dto: CreateCorrespondenceDto): Promise<Correspondence> {
     return this.connectionManager.runInTransaction(async (manager) => {
