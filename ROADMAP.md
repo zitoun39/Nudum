@@ -8,12 +8,12 @@ This document serves as the **Single Source of Truth** for the implementation st
 
 | Layer / Dimension                 | Completion % | Weighted Impact | Status                      |
 | :-------------------------------- | :----------: | :-------------: | :-------------------------- |
-| **Entire Platform (Global)**      |  **72.0%**   |      100%       | ◐ In Progress               |
+| **Entire Platform (Global)**      |  **73.0%**   |      100%       | ◐ In Progress               |
 | **Documentation**                 |  **96.0%**   |       15%       | ☑ Completed / Near Complete |
 | **Design System (`packages/ui`)** |  **100.0%**  |       15%       | ☑ Completed                 |
 | **Infrastructure & Core API**     |  **100.0%**  |       25%       | ☑ Completed                 |
 | **Testing & CI/CD**               |  **35.0%**   |       15%       | ◐ In Progress               |
-| **Business Modules**              |  **20.0%**   |       30%       | ◐ In Progress               |
+| **Business Modules**              |  **22.0%**   |       30%       | ◐ In Progress               |
 
 ---
 
@@ -54,7 +54,7 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Objective**: Implement business logic layers for **Archivi** (Enterprise Document Management), **Mahattati** (Water treatment plant operations), and **Jawdati** (Lab specimen management).
 - **Dependencies**: Milestone 3
 - **Estimated Complexity**: High
-- **Completion %**: 70%
+- **Completion %**: 80%
 - **Blocking Issues**: None
 - **Priority**: High
 - **Status**: ◐ In Progress
@@ -291,3 +291,14 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Estimated effort**: 6 hours
 - **Progress %**: 100%
 - **Notes**: Completed. All core services pass validation.
+
+### Component: Business Module - Mahattati Telemetry Logs
+
+- **ID**: `MAH-003`
+- **Description**: Implement MeasurementsService managing telemetry records log entries for station metrics.
+- **Module**: Mahattati
+- **Files involved**: `apps/api/src/modules/mahattati/measurements.service.ts`, `apps/api/src/modules/mahattati/dto/measurements.dto.ts`
+- **Risk level**: Medium
+- **Estimated effort**: 3 hours
+- **Progress %**: 100%
+- **Notes**: Completed. All telemetry logic passes validation.
