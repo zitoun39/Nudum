@@ -4,6 +4,7 @@ import { DatabaseModule } from "./database/database.module";
 import { TenantMiddleware } from "./database/tenant.middleware";
 import { ArchiviModule } from "./modules/archivi/archivi.module";
 import { StorageModule } from "./modules/storage/storage.module";
+import { MahattatiModule } from "./modules/mahattati/mahattati.module";
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { StorageModule } from "./modules/storage/storage.module";
     }),
     DatabaseModule,
     ArchiviModule,
-    StorageModule
+    StorageModule,
+    MahattatiModule
   ],
   controllers: [],
   providers: []

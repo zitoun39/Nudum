@@ -8,12 +8,12 @@ This document serves as the **Single Source of Truth** for the implementation st
 
 | Layer / Dimension                 | Completion % | Weighted Impact | Status                      |
 | :-------------------------------- | :----------: | :-------------: | :-------------------------- |
-| **Entire Platform (Global)**      |  **73.0%**   |      100%       | ◐ In Progress               |
+| **Entire Platform (Global)**      |  **74.0%**   |      100%       | ◐ In Progress               |
 | **Documentation**                 |  **96.0%**   |       15%       | ☑ Completed / Near Complete |
 | **Design System (`packages/ui`)** |  **100.0%**  |       15%       | ☑ Completed                 |
 | **Infrastructure & Core API**     |  **100.0%**  |       25%       | ☑ Completed                 |
 | **Testing & CI/CD**               |  **35.0%**   |       15%       | ◐ In Progress               |
-| **Business Modules**              |  **22.0%**   |       30%       | ◐ In Progress               |
+| **Business Modules**              |  **24.0%**   |       30%       | ◐ In Progress               |
 
 ---
 
@@ -54,7 +54,7 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Objective**: Implement business logic layers for **Archivi** (Enterprise Document Management), **Mahattati** (Water treatment plant operations), and **Jawdati** (Lab specimen management).
 - **Dependencies**: Milestone 3
 - **Estimated Complexity**: High
-- **Completion %**: 80%
+- **Completion %**: 90%
 - **Blocking Issues**: None
 - **Priority**: High
 - **Status**: ◐ In Progress
@@ -302,3 +302,14 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Estimated effort**: 3 hours
 - **Progress %**: 100%
 - **Notes**: Completed. All telemetry logic passes validation.
+
+### Component: Business Module - Mahattati REST API & Specs
+
+- **ID**: `MAH-004`
+- **Description**: Implement SitesController, StationsController, EquipmentController, and MeasurementsController exposing REST endpoints, and verify using Vitest spec suites.
+- **Module**: Mahattati
+- **Files involved**: `apps/api/src/modules/mahattati/*.controller.ts`, `apps/api/src/modules/mahattati/mahattati.module.ts`, `apps/api/src/modules/mahattati/mahattati.spec.ts`
+- **Risk level**: Low
+- **Estimated effort**: 5 hours
+- **Progress %**: 100%
+- **Notes**: Completed. All tests pass successfully.
