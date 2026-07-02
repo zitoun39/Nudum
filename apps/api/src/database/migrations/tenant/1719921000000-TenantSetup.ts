@@ -207,9 +207,75 @@ export class TenantSetup1719921000000 implements MigrationInterface {
         CONSTRAINT FK_measurements_equipment FOREIGN KEY (equipment_id) REFERENCES equipment(id) ON DELETE SET NULL
       );
     `);
+
+    // 13. Create Jawdati laboratories table
+    await queryRunner.query(`
+      CREATE TABLE IF NOT EXISTS laboratories (
+        id uuid NOT NULL DEFAULT gen_random_uuid(),
+        name varchar(150) NOT NULL,
+        location varchar(255),
+        created_at timestamp NOT NULL DEFAULT now(),
+        updated_at timestamp NOT NULL DEFAULT now(),
+        CONSTRAINT PK_laboratories_id PRIMARY KEY (id)
+      );
+    `);
+
+    // 14. Create Jawdati samples table
+    await queryRunner.query(`
+      CREATE TABLE IF NOT EXISTS samples (
+        id uuid NOT NULL DEFAULT gen_random_uuid(),
+        sample_code varchar(50) NOT NULL,
+        laboratory_id uuid NOT NULL,
+        collected_at timestamp NOT NULL,
+        collected_by varchar(100) NOT NULL,
+        source_site_id uuid,
+        source_station_id uuid,
+        status varchar(50) NOT NULL DEFAULT 'collected',
+        created_at timestamp NOT NULL DEFAULT now(),
+        updated_at timestamp NOT NULL DEFAULT now(),
+        CONSTRAINT PK_samples_id PRIMARY KEY (id),
+        CONSTRAINT FK_samples_laboratory FOREIGN KEY (laboratory_id) REFERENCES laboratories(id) ON DELETE CASCADE
+      );
+    `);
+
+    // 15. Create Jawdati analyses table
+    await queryRunner.query(`
+      CREATE TABLE IF NOT EXISTS analyses (
+        id uuid NOT NULL DEFAULT gen_random_uuid(),
+        sample_id uuid NOT NULL,
+        test_method varchar(100) NOT NULL,
+        status varchar(50) NOT NULL DEFAULT 'pending',
+        analyst_id uuid NOT NULL,
+        started_at timestamp,
+        completed_at timestamp,
+        created_at timestamp NOT NULL DEFAULT now(),
+        CONSTRAINT PK_analyses_id PRIMARY KEY (id),
+        CONSTRAINT FK_analyses_sample FOREIGN KEY (sample_id) REFERENCES samples(id) ON DELETE CASCADE
+      );
+    `);
+
+    // 16. Create Jawdati results table
+    await queryRunner.query(`
+      CREATE TABLE IF NOT EXISTS results (
+        id uuid NOT NULL DEFAULT gen_random_uuid(),
+        analysis_id uuid NOT NULL,
+        parameter_name varchar(100) NOT NULL,
+        value numeric(12,4) NOT NULL,
+        unit varchar(20) NOT NULL,
+        is_conforming boolean NOT NULL DEFAULT true,
+        created_at timestamp NOT NULL DEFAULT now(),
+        CONSTRAINT PK_results_id PRIMARY KEY (id),
+        CONSTRAINT FK_results_analysis FOREIGN KEY (analysis_id) REFERENCES analyses(id) ON DELETE CASCADE
+      );
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TABLE IF EXISTS results;`);
+    await queryRunner.query(`DROP TABLE IF EXISTS analyses;`);
+    await queryRunner.query(`DROP TABLE IF EXISTS samples;`);
+    await queryRunner.query(`DROP TABLE IF EXISTS laboratories;`);
+
     await queryRunner.query(`DROP TABLE IF EXISTS measurements;`);
     await queryRunner.query(`DROP TABLE IF EXISTS equipment;`);
     await queryRunner.query(`DROP TABLE IF EXISTS stations;`);
