@@ -5,6 +5,7 @@ import { TenantMiddleware } from "./database/tenant.middleware";
 import { ArchiviModule } from "./modules/archivi/archivi.module";
 import { StorageModule } from "./modules/storage/storage.module";
 import { MahattatiModule } from "./modules/mahattati/mahattati.module";
+import { JawdatiModule } from "./modules/jawdati/jawdati.module";
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { MahattatiModule } from "./modules/mahattati/mahattati.module";
     DatabaseModule,
     ArchiviModule,
     StorageModule,
-    MahattatiModule
+    MahattatiModule,
+    JawdatiModule
   ],
   controllers: [],
   providers: []
