@@ -3,6 +3,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { DatabaseModule } from "./database/database.module";
 import { TenantMiddleware } from "./database/tenant.middleware";
 import { ArchiviModule } from "./modules/archivi/archivi.module";
+import { StorageModule } from "./modules/storage/storage.module";
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { ArchiviModule } from "./modules/archivi/archivi.module";
       signOptions: { expiresIn: process.env.JWT_ACCESS_EXPIRATION || "15m" }
     }),
     DatabaseModule,
-    ArchiviModule
+    ArchiviModule,
+    StorageModule
   ],
   controllers: [],
   providers: []

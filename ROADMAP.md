@@ -8,12 +8,12 @@ This document serves as the **Single Source of Truth** for the implementation st
 
 | Layer / Dimension                 | Completion % | Weighted Impact | Status                      |
 | :-------------------------------- | :----------: | :-------------: | :-------------------------- |
-| **Entire Platform (Global)**      |  **65.0%**   |      100%       | ◐ In Progress               |
+| **Entire Platform (Global)**      |  **67.5%**   |      100%       | ◐ In Progress               |
 | **Documentation**                 |  **95.0%**   |       15%       | ☑ Completed / Near Complete |
 | **Design System (`packages/ui`)** |  **100.0%**  |       15%       | ☑ Completed                 |
 | **Infrastructure & Core API**     |  **100.0%**  |       25%       | ☑ Completed                 |
 | **Testing & CI/CD**               |  **35.0%**   |       15%       | ◐ In Progress               |
-| **Business Modules**              |  **15.0%**   |       30%       | ◐ In Progress               |
+| **Business Modules**              |  **20.0%**   |       30%       | ◐ In Progress               |
 
 ---
 
@@ -54,7 +54,7 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Objective**: Implement business logic layers for **Archivi** (Enterprise Document Management), **Mahattati** (Water treatment plant operations), and **Jawdati** (Lab specimen management).
 - **Dependencies**: Milestone 3
 - **Estimated Complexity**: High
-- **Completion %**: 40%
+- **Completion %**: 60%
 - **Blocking Issues**: None
 - **Priority**: High
 - **Status**: ◐ In Progress
@@ -194,6 +194,37 @@ This document serves as the **Single Source of Truth** for the implementation st
 - **Description**: Implement FoldersController and TagsController exposing CRUD REST endpoints, and register ArchiviModule in AppModule.
 - **Module**: Archivi
 - **Files involved**: `apps/api/src/modules/archivi/folders.controller.ts`, `apps/api/src/modules/archivi/tags.controller.ts`, `apps/api/src/modules/archivi/archivi.module.ts`, `apps/api/src/app.module.ts`
+- **Risk level**: Medium
+- **Estimated effort**: 2 hours
+- **Progress %**: 100%
+- **Notes**: Completed.
+
+### Component: Core Platform - MinIO Storage Wrapper
+
+- **ID**: `STG-001`
+- **Description**: Implement StorageModule and StorageService wrapping AWS S3 client targeting MinIO with automated bucket provisioning on module init.
+- **Module**: Infrastructure
+- **Files involved**: `apps/api/src/modules/storage/*`
+- **Risk level**: High
+- **Estimated effort**: 5 hours
+- **Progress %**: 100%
+- **Notes**: Completed.
+
+### Component: Business Module - Archivi Document Versioning
+
+- **ID**: `ARC-005`
+- **Description**: Implement CreateDocumentDto validation model and DocumentsService version upload & presigned URL retrieval engine.
+- **Module**: Archivi
+- **Files involved**: `apps/api/src/modules/archivi/dto/documents.dto.ts`, `apps/api/src/modules/archivi/documents.service.ts`
+- **Risk level**: Medium
+- **Estimated effort**: 4 hours
+- **Progress %**: 100%
+- **Notes**: Completed.
+
+- **ID**: `ARC-006`
+- **Description**: Implement DocumentsController exposing REST endpoints for uploading versions, creating document containers, and fetching presigned download URLs. Register endpoints in ArchiviModule.
+- **Module**: Archivi
+- **Files involved**: `apps/api/src/modules/archivi/documents.controller.ts`, `apps/api/src/modules/archivi/archivi.module.ts`
 - **Risk level**: Medium
 - **Estimated effort**: 2 hours
 - **Progress %**: 100%
