@@ -6,6 +6,7 @@ import { SamplesService } from "./samples.service";
 import { AnalysesService } from "./analyses.service";
 import { ResultsService } from "./results.service";
 import { AnalysisStatus } from "./entities/analysis.entity";
+import { TenantConnectionManager } from "../../database/tenant-connection-manager";
 
 describe("Jawdati Services Unit Tests", () => {
   let laboratoriesService: LaboratoriesService;

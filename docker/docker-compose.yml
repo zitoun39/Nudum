@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   postgres:
-    image: ankane/pgvector:15
+    image: pgvector/pgvector:pg15
     container_name: nudum-postgres
     ports:
       - "${DB_PORT:-5432}:5432"

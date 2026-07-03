@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException, Inject } from "@nestjs/common";
 import { TenantConnectionManager } from "../../database/tenant-connection-manager";
 import { CreateAnalysisDto, UpdateAnalysisStatusDto } from "./dto/analyses.dto";
 import { Analysis, AnalysisStatus } from "./entities/analysis.entity";
@@ -6,7 +6,10 @@ import { Sample } from "./entities/sample.entity";
 
 @Injectable()
 export class AnalysesService {
-  constructor(private readonly connectionManager: TenantConnectionManager) {}
+  constructor(
+    @Inject(TenantConnectionManager)
+    private readonly connectionManager: TenantConnectionManager
+  ) {}
 
   async create(dto: CreateAnalysisDto): Promise<Analysis> {
     return this.connectionManager.runInTransaction(async (entityManager) => {
