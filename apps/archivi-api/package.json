@@ -39,7 +39,7 @@
     "@nudum/tsconfig": "workspace:*",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.6",
-    "@types/express": "^4.17.17",
+    "@types/express": "^5.0.6",
     "@types/ioredis": "^4.28.10",
     "@types/node": "^20.0.0",
     "ts-node": "^10.9.2",
