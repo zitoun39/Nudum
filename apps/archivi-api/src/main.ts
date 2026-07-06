@@ -49,7 +49,7 @@ async function bootstrap() {
     credentials: true
   });
 
-  const port = process.env.PORT || 5003;
+  const port = process.env.ARCHIVI_PORT || 5003;
   await app.listen(port);
   console.log(`نُظُم | Nudum Archivi API running on: http://localhost:${port}`);
 }

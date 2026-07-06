@@ -49,7 +49,7 @@ async function bootstrap() {
     credentials: true
   });
 
-  const port = process.env.PORT || 5002;
+  const port = process.env.JAWDATI_PORT || 5002;
   await app.listen(port);
   console.log(`نُظُم | Nudum Jawdati API running on: http://localhost:${port}`);
 }

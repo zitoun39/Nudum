@@ -49,7 +49,7 @@ async function bootstrap() {
     credentials: true
   });
 
-  const port = process.env.PORT || 5001;
+  const port = process.env.MAHATTATI_PORT || 5001;
   await app.listen(port);
   console.log(`نُظُم | Nudum Mahattati API running on: http://localhost:${port}`);
 }
