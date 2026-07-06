@@ -1,0 +1,14 @@
+{
+  "extends": "../../packages/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "jsx": "react-jsx",
+    "composite": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "types": ["vite/client"],
+    "lib": ["es2022", "dom", "dom.iterable"]
+  },
+  "include": ["src/**/*"]
+}
