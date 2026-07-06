@@ -8,14 +8,14 @@
     "lint": "eslint \"src/**/*.{ts,tsx}\" --no-error-on-unmatched-pattern"
   },
   "dependencies": {
-    "react": "^18.2.0",
+    "react": "^19.2.7",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.0",
     "lucide-react": "^0.331.0",
     "@nudum/ui": "workspace:*"
   },
   "devDependencies": {
-    "@types/react": "^18.2.37",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react": "^4.2.0",
     "@nudum/tsconfig": "workspace:*",
